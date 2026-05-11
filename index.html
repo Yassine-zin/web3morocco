@@ -25,30 +25,6 @@ max-width:520px;
 margin:auto;
 }
 
-.topbar{
-display:flex;
-justify-content:space-between;
-gap:10px;
-margin-bottom:15px;
-}
-
-select, input{
-width:100%;
-padding:14px;
-border:none;
-border-radius:14px;
-font-size:16px;
-outline:none;
-}
-
-.lang{
-width:38%;
-}
-
-.city{
-width:62%;
-}
-
 .logo{
 text-align:center;
 font-size:46px;
@@ -64,15 +40,17 @@ margin-top:8px;
 .sub{
 text-align:center;
 opacity:.85;
-margin-bottom:22px;
+margin-bottom:20px;
 font-size:15px;
 }
 
-.searchbox{
-background:rgba(255,255,255,.08);
-padding:16px;
-border-radius:18px;
-margin-bottom:18px;
+input{
+width:100%;
+padding:14px;
+border:none;
+border-radius:14px;
+font-size:16px;
+margin-bottom:12px;
 }
 
 button{
@@ -84,10 +62,10 @@ font-size:17px;
 font-weight:bold;
 color:white;
 cursor:pointer;
-margin-top:10px;
+margin-bottom:10px;
 }
 
-.book{background:#16a34a;}
+.main{background:#16a34a;}
 .worker{background:#2563eb;}
 .contact{background:#22c55e;}
 
@@ -95,7 +73,7 @@ margin-top:10px;
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:12px;
-margin-top:18px;
+margin-top:16px;
 }
 
 .card{
@@ -104,6 +82,12 @@ padding:18px;
 border-radius:18px;
 text-align:center;
 font-size:15px;
+cursor:pointer;
+transition:.2s;
+}
+
+.card:active{
+transform:scale(.96);
 }
 
 .status{
@@ -117,9 +101,44 @@ font-size:15px;
 
 .footer{
 text-align:center;
-margin-top:22px;
+margin-top:20px;
 opacity:.7;
 font-size:13px;
+}
+
+.popup{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.6);
+display:none;
+justify-content:center;
+align-items:center;
+padding:20px;
+}
+
+.box{
+background:#0f1e38;
+padding:24px;
+border-radius:20px;
+width:100%;
+max-width:360px;
+text-align:center;
+}
+
+.box h3{
+margin-bottom:12px;
+}
+
+.box p{
+opacity:.85;
+margin-bottom:16px;
+}
+
+.box button{
+margin-bottom:8px;
 }
 </style>
 </head>
@@ -128,114 +147,79 @@ font-size:13px;
 
 <div class="container">
 
-<div class="topbar">
-<select class="lang" onchange="changeLang(this.value)">
-<option value="en">English</option>
-<option value="ar">العربية</option>
-<option value="fr">Français</option>
-</select>
-
-<select class="city">
-<option>Casablanca</option>
-<option>Agadir</option>
-</select>
-</div>
-
 <div class="logo">🇲🇦⚡</div>
 
-<h1 id="title">Web3Morocco</h1>
+<h1>Web3Morocco</h1>
 
-<div class="sub" id="subtitle">
-All Moroccan Services In One App
-</div>
-
-<div class="searchbox">
+<div class="sub">All Moroccan Services In One App</div>
 
 <input type="text" id="serviceInput" placeholder="What service do you need?">
 
-<button class="book" onclick="bookService()" id="btn1">
-Request Service Now
-</button>
-
-<button class="worker" onclick="registerWorker()" id="btn2">
-Register as Worker
-</button>
-
-<button class="contact" onclick="contactUs()" id="btn3">
-WhatsApp Contact
-</button>
-
-</div>
+<button class="main" onclick="requestNow()">Request Service Now</button>
+<button class="worker" onclick="worker()">Register as Worker</button>
+<button class="contact" onclick="openWA('General Contact')">WhatsApp Contact</button>
 
 <div class="grid">
 
-<div class="card">🔧 Carpenter</div>
-<div class="card">🚗 Mechanic</div>
-<div class="card">🧹 Cleaning</div>
-<div class="card">💻 App Developer</div>
-<div class="card">📈 Marketing</div>
-<div class="card">🚚 Delivery</div>
-<div class="card">🏠 Home Repair</div>
-<div class="card">📦 Other Services</div>
+<div class="card" onclick="service('Carpenter')">🔧 Carpenter</div>
+<div class="card" onclick="service('Mechanic')">🚗 Mechanic</div>
+<div class="card" onclick="service('Cleaning')">🧹 Cleaning</div>
+<div class="card" onclick="service('App Developer')">💻 App Developer</div>
+<div class="card" onclick="service('Marketing')">📈 Marketing</div>
+<div class="card" onclick="service('Delivery')">🚚 Delivery</div>
+<div class="card" onclick="service('Home Repair')">🏠 Home Repair</div>
+<div class="card" onclick="service('Other Services')">📦 Other Services</div>
 
 </div>
 
-<div class="status" id="status">
-Welcome to the future of Moroccan services
+<div class="status" id="status">Welcome to Web3Morocco</div>
+
+<div class="footer">Powered by Pi Network • Web3Morocco.pi</div>
+
 </div>
 
-<div class="footer">
-Powered by Pi Network • Web3Morocco.pi
+<div class="popup" id="popup">
+<div class="box">
+<h3 id="popTitle">Service</h3>
+<p id="popText">Ready to connect you.</p>
+<button class="main" onclick="goNow()">Continue to WhatsApp</button>
+<button class="worker" onclick="closePop()">Close</button>
 </div>
-
 </div>
 
 <script>
-const phone = "212669249194";
+const phone="212669249194";
+let selectedService="";
 
-function bookService(){
-let service = document.getElementById("serviceInput").value;
-if(service==""){service="Service Request";}
-window.open("https://wa.me/"+phone+"?text=Hello, I need: "+encodeURIComponent(service),"_blank");
+function openWA(text){
+window.open("https://wa.me/"+phone+"?text="+encodeURIComponent("Hello, I need: "+text),"_blank");
 }
 
-function registerWorker(){
-window.open("https://wa.me/"+phone+"?text=Hello, I want to register as a worker on Web3Morocco","_blank");
+function requestNow(){
+let txt=document.getElementById("serviceInput").value;
+if(txt==""){txt="General Service";}
+service(txt);
 }
 
-function contactUs(){
-window.open("https://wa.me/"+phone,"_blank");
+function worker(){
+window.open("https://wa.me/"+phone+"?text="+encodeURIComponent("Hello, I want to register as a worker on Web3Morocco"),"_blank");
 }
 
-function changeLang(lang){
-
-if(lang=="ar"){
-document.getElementById("subtitle").innerText="جميع الخدمات المغربية في تطبيق واحد";
-document.getElementById("serviceInput").placeholder="ما الخدمة التي تحتاجها؟";
-document.getElementById("btn1").innerText="طلب خدمة الآن";
-document.getElementById("btn2").innerText="سجل كمقدم خدمة";
-document.getElementById("btn3").innerText="تواصل واتساب";
-document.getElementById("status").innerText="مرحبا بك في مستقبل الخدمات المغربية";
+function service(name){
+selectedService=name;
+document.getElementById("popTitle").innerText=name;
+document.getElementById("popText").innerText="We found your request. Continue to WhatsApp now.";
+document.getElementById("popup").style.display="flex";
+document.getElementById("status").innerText=name+" selected";
 }
 
-if(lang=="fr"){
-document.getElementById("subtitle").innerText="Tous les services marocains dans une seule application";
-document.getElementById("serviceInput").placeholder="Quel service cherchez-vous ?";
-document.getElementById("btn1").innerText="Demander un service";
-document.getElementById("btn2").innerText="S'inscrire comme prestataire";
-document.getElementById("btn3").innerText="Contact WhatsApp";
-document.getElementById("status").innerText="Bienvenue dans le futur des services marocains";
+function closePop(){
+document.getElementById("popup").style.display="none";
 }
 
-if(lang=="en"){
-document.getElementById("subtitle").innerText="All Moroccan Services In One App";
-document.getElementById("serviceInput").placeholder="What service do you need?";
-document.getElementById("btn1").innerText="Request Service Now";
-document.getElementById("btn2").innerText="Register as Worker";
-document.getElementById("btn3").innerText="WhatsApp Contact";
-document.getElementById("status").innerText="Welcome to the future of Moroccan services";
-}
-
+function goNow(){
+closePop();
+openWA(selectedService);
 }
 </script>
 
