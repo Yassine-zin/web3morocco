@@ -14,49 +14,65 @@ font-family:Arial,Helvetica,sans-serif;
 }
 
 body{
-background:linear-gradient(180deg,#07111f,#0c1c34,#11284d);
+background:linear-gradient(180deg,#06101d,#0d1d34,#13294b);
 color:white;
 min-height:100vh;
 padding:20px;
 }
 
 .container{
-max-width:500px;
+max-width:520px;
 margin:auto;
 }
 
+.topbar{
+display:flex;
+justify-content:space-between;
+gap:10px;
+margin-bottom:15px;
+}
+
+select, input{
+width:100%;
+padding:14px;
+border:none;
+border-radius:14px;
+font-size:16px;
+outline:none;
+}
+
+.lang{
+width:38%;
+}
+
+.city{
+width:62%;
+}
+
 .logo{
-font-size:44px;
 text-align:center;
-margin-top:10px;
+font-size:46px;
+margin-top:5px;
 }
 
 h1{
 text-align:center;
 font-size:34px;
-margin-top:10px;
+margin-top:8px;
 }
 
 .sub{
 text-align:center;
-opacity:.8;
-margin-bottom:25px;
+opacity:.85;
+margin-bottom:22px;
+font-size:15px;
 }
 
-.search{
+.searchbox{
 background:rgba(255,255,255,.08);
 padding:16px;
 border-radius:18px;
-margin-bottom:20px;
-}
-
-select,input{
-width:100%;
-padding:14px;
-margin-bottom:12px;
-border:none;
-border-radius:14px;
-font-size:16px;
+margin-bottom:18px;
 }
 
 button{
@@ -64,21 +80,22 @@ width:100%;
 padding:15px;
 border:none;
 border-radius:16px;
-font-size:18px;
+font-size:17px;
 font-weight:bold;
 color:white;
 cursor:pointer;
-margin-bottom:14px;
+margin-top:10px;
 }
 
-.mainbtn{background:#16a34a;}
-.workerbtn{background:#2563eb;}
+.book{background:#16a34a;}
+.worker{background:#2563eb;}
+.contact{background:#22c55e;}
 
 .grid{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:12px;
-margin-top:10px;
+margin-top:18px;
 }
 
 .card{
@@ -86,14 +103,23 @@ background:rgba(255,255,255,.08);
 padding:18px;
 border-radius:18px;
 text-align:center;
-font-size:16px;
+font-size:15px;
+}
+
+.status{
+margin-top:18px;
+padding:14px;
+border-radius:16px;
+background:rgba(255,255,255,.08);
+text-align:center;
+font-size:15px;
 }
 
 .footer{
 text-align:center;
+margin-top:22px;
 opacity:.7;
 font-size:13px;
-margin-top:25px;
 }
 </style>
 </head>
@@ -102,34 +128,41 @@ margin-top:25px;
 
 <div class="container">
 
+<div class="topbar">
+<select class="lang" onchange="changeLang(this.value)">
+<option value="en">English</option>
+<option value="ar">العربية</option>
+<option value="fr">Français</option>
+</select>
+
+<select class="city">
+<option>Casablanca</option>
+<option>Agadir</option>
+</select>
+</div>
+
 <div class="logo">🇲🇦⚡</div>
 
-<h1>Web3Morocco</h1>
+<h1 id="title">Web3Morocco</h1>
 
-<div class="sub">
+<div class="sub" id="subtitle">
 All Moroccan Services In One App
 </div>
 
-<div class="search">
+<div class="searchbox">
 
-<select>
-<option>Choose City</option>
-<option>Casablanca</option>
-<option>Rabat</option>
-<option>Agadir</option>
-<option>Fes</option>
-<option>Marrakech</option>
-<option>Tanger</option>
-</select>
+<input type="text" id="serviceInput" placeholder="What service do you need?">
 
-<input type="text" placeholder="What service do you need?">
-
-<button class="mainbtn">
-طلب خدمة الآن
+<button class="book" onclick="bookService()" id="btn1">
+Request Service Now
 </button>
 
-<button class="workerbtn">
-سجل كمقدم خدمة
+<button class="worker" onclick="registerWorker()" id="btn2">
+Register as Worker
+</button>
+
+<button class="contact" onclick="contactUs()" id="btn3">
+WhatsApp Contact
 </button>
 
 </div>
@@ -147,11 +180,64 @@ All Moroccan Services In One App
 
 </div>
 
+<div class="status" id="status">
+Welcome to the future of Moroccan services
+</div>
+
 <div class="footer">
 Powered by Pi Network • Web3Morocco.pi
 </div>
 
 </div>
+
+<script>
+const phone = "212669249194";
+
+function bookService(){
+let service = document.getElementById("serviceInput").value;
+if(service==""){service="Service Request";}
+window.open("https://wa.me/"+phone+"?text=Hello, I need: "+encodeURIComponent(service),"_blank");
+}
+
+function registerWorker(){
+window.open("https://wa.me/"+phone+"?text=Hello, I want to register as a worker on Web3Morocco","_blank");
+}
+
+function contactUs(){
+window.open("https://wa.me/"+phone,"_blank");
+}
+
+function changeLang(lang){
+
+if(lang=="ar"){
+document.getElementById("subtitle").innerText="جميع الخدمات المغربية في تطبيق واحد";
+document.getElementById("serviceInput").placeholder="ما الخدمة التي تحتاجها؟";
+document.getElementById("btn1").innerText="طلب خدمة الآن";
+document.getElementById("btn2").innerText="سجل كمقدم خدمة";
+document.getElementById("btn3").innerText="تواصل واتساب";
+document.getElementById("status").innerText="مرحبا بك في مستقبل الخدمات المغربية";
+}
+
+if(lang=="fr"){
+document.getElementById("subtitle").innerText="Tous les services marocains dans une seule application";
+document.getElementById("serviceInput").placeholder="Quel service cherchez-vous ?";
+document.getElementById("btn1").innerText="Demander un service";
+document.getElementById("btn2").innerText="S'inscrire comme prestataire";
+document.getElementById("btn3").innerText="Contact WhatsApp";
+document.getElementById("status").innerText="Bienvenue dans le futur des services marocains";
+}
+
+if(lang=="en"){
+document.getElementById("subtitle").innerText="All Moroccan Services In One App";
+document.getElementById("serviceInput").placeholder="What service do you need?";
+document.getElementById("btn1").innerText="Request Service Now";
+document.getElementById("btn2").innerText="Register as Worker";
+document.getElementById("btn3").innerText="WhatsApp Contact";
+document.getElementById("status").innerText="Welcome to the future of Moroccan services";
+}
+
+}
+</script>
 
 </body>
 </html>
