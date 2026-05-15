@@ -8,58 +8,113 @@
 <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 
 <style>
-body{
+*{
 margin:0;
-font-family:Arial;
-background:#06101d;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+background:linear-gradient(180deg,#06101d,#0d1d34,#13294b);
 color:white;
+min-height:100vh;
 padding:20px;
 }
 
-.container{max-width:520px;margin:auto}
+.container{
+max-width:520px;
+margin:auto;
+}
 
-h1{text-align:center}
+.logo{
+text-align:center;
+font-size:48px;
+margin-top:10px;
+}
 
-.card{
-background:rgba(255,255,255,0.08);
-padding:15px;
-border-radius:15px;
-margin-bottom:10px;
+h1{
+text-align:center;
+font-size:34px;
+margin-top:10px;
+}
+
+.sub{
+text-align:center;
+opacity:.85;
+margin-bottom:20px;
+}
+
+.profile{
+background:rgba(255,255,255,.08);
+padding:18px;
+border-radius:18px;
+margin-bottom:18px;
+line-height:1.8;
 }
 
 button{
 width:100%;
-padding:14px;
+padding:15px;
 border:none;
-border-radius:12px;
-margin-top:10px;
+border-radius:16px;
+font-size:17px;
 font-weight:bold;
 cursor:pointer;
+margin-bottom:12px;
+color:white;
 }
 
-.login{background:#2563eb}
-.pay{background:#16a34a}
-.wa{background:#22c55e}
+.login{
+background:#2563eb;
+}
+
+.pay{
+background:#16a34a;
+}
+
+.worker{
+background:#9333ea;
+}
+
+.contact{
+background:#22c55e;
+}
 
 .grid{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:10px;
-margin-top:15px;
+gap:12px;
+margin-top:18px;
 }
 
-.item{
-background:rgba(255,255,255,0.1);
-padding:12px;
-border-radius:12px;
+.card{
+background:rgba(255,255,255,.08);
+padding:18px;
+border-radius:18px;
 text-align:center;
 cursor:pointer;
+transition:.2s;
 }
 
-#status{
-margin-top:15px;
+.card:active{
+transform:scale(.96);
+}
+
+.status{
+margin-top:20px;
+background:rgba(255,255,255,.08);
+padding:16px;
+border-radius:16px;
 text-align:center;
-opacity:0.8;
+min-height:60px;
+}
+
+.footer{
+text-align:center;
+margin-top:20px;
+opacity:.7;
+font-size:13px;
 }
 </style>
 </head>
@@ -68,80 +123,228 @@ opacity:0.8;
 
 <div class="container">
 
-<h1>🇲🇦 Web3Morocco</h1>
+<div class="logo">🇲🇦⚡</div>
 
-<div class="card">
-👤 User: <span id="user">Guest</span><br>
-💎 Status: Free
+<h1>Web3Morocco</h1>
+
+<div class="sub">
+All Moroccan Services In One App
 </div>
 
-<button class="login" onclick="loginPi()">Login with Pi</button>
+<div class="profile">
+👤 User: <span id="username">Guest</span><br>
+💎 Status: <span id="premiumStatus">Free</span><br>
+🌐 Network: Pi Testnet
+</div>
 
-<button class="pay" onclick="premium()">Unlock Premium (0.1 π)</button>
+<button class="login" onclick="loginPi()">
+🔐 Login with Pi
+</button>
 
-<button class="wa" onclick="wa()">WhatsApp Support</button>
+<button class="pay" onclick="premium()">
+💎 Unlock Premium (0.1 π)
+</button>
+
+<button class="worker" onclick="workerRegister()">
+👷 Register as Worker
+</button>
+
+<button class="contact" onclick="contactUs()">
+📲 WhatsApp Contact
+</button>
 
 <div class="grid">
 
-<div class="item" onclick="service('Carpenter')">🔧 Carpenter</div>
-<div class="item" onclick="service('Mechanic')">🚗 Mechanic</div>
-<div class="item" onclick="service('Cleaning')">🧹 Cleaning</div>
-<div class="item" onclick="service('Developer')">💻 Developer</div>
-<div class="item" onclick="service('Marketing')">📈 Marketing</div>
-<div class="item" onclick="service('Delivery')">🚚 Delivery</div>
+<div class="card" onclick="service('Carpenter')">
+🔧 Carpenter
+</div>
+
+<div class="card" onclick="service('Mechanic')">
+🚗 Mechanic
+</div>
+
+<div class="card" onclick="service('Cleaning')">
+🧹 Cleaning
+</div>
+
+<div class="card" onclick="service('App Developer')">
+💻 App Developer
+</div>
+
+<div class="card" onclick="service('Marketing')">
+📈 Marketing
+</div>
+
+<div class="card" onclick="service('Delivery')">
+🚚 Delivery
+</div>
+
+<div class="card" onclick="service('Home Repair')">
+🏠 Home Repair
+</div>
+
+<div class="card" onclick="service('Other Services')">
+📦 Other Services
+</div>
 
 </div>
 
-<div id="status">Ready</div>
+<div class="status" id="status">
+Welcome to Web3Morocco
+</div>
+
+<div class="footer">
+Powered by Pi Network • Web3Morocco.pi
+</div>
 
 </div>
 
 <script>
-const phone="212669249194";
-let currentUser="Guest";
 
-function loginPi(){
-Pi.init({ version:"2.0", sandbox:true });
+const phone = "212669249194";
 
-Pi.authenticate(["username","payments"], function(payment){
-console.log(payment);
-}).then(auth=>{
-currentUser=auth.user.username;
-document.getElementById("user").innerText=currentUser;
-document.getElementById("status").innerText="Logged in as "+currentUser;
-}).catch(()=>{
-document.getElementById("status").innerText="Login failed";
+let currentUser = "Guest";
+
+Pi.init({
+version:"2.0",
+sandbox:true
 });
+
+async function loginPi(){
+
+try{
+
+const scopes = ['username','payments'];
+
+function onIncompletePaymentFound(payment){
+console.log(payment);
 }
 
-function premium(){
-const paymentData={
+const auth = await Pi.authenticate(
+scopes,
+onIncompletePaymentFound
+);
+
+currentUser = auth.user.username;
+
+document.getElementById("username").innerText=currentUser;
+
+document.getElementById("status").innerText=
+"Welcome "+currentUser;
+
+}catch(err){
+
+document.getElementById("status").innerText=
+"Login failed";
+
+}
+
+}
+
+async function premium(){
+
+document.getElementById("status").innerText=
+"Starting payment...";
+
+try{
+
+const paymentData = {
+
 amount:0.1,
-memo:"Premium Access Web3Morocco",
-metadata:{type:"premium"}
+
+memo:"Web3Morocco Premium",
+
+metadata:{
+type:"premium"
+}
+
 };
 
-Pi.createPayment(paymentData,
+Pi.createPayment(
+
+paymentData,
+
 function(paymentId){
-document.getElementById("status").innerText="Payment started...";
+
+document.getElementById("status").innerText=
+"Payment created...";
+
 },
-function(paymentId){
-document.getElementById("status").innerText="Premium activated!";
+
+async function(paymentId){
+
+await fetch("/api/payment",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
 },
+
+body:JSON.stringify({
+paymentId:paymentId
+})
+
+});
+
+document.getElementById("premiumStatus").innerText=
+"Premium";
+
+document.getElementById("status").innerText=
+"Premium activated successfully!";
+
+},
+
 function(error){
-document.getElementById("status").innerText="Payment cancelled";
-}
-);
+
+document.getElementById("status").innerText=
+"Payment cancelled";
+
 }
 
-function wa(){
-window.open("https://wa.me/"+phone,"_blank");
+);
+
+}catch(err){
+
+document.getElementById("status").innerText=
+"Payment error";
+
+}
+
+}
+
+function workerRegister(){
+
+window.open(
+"https://wa.me/"+phone+
+"?text=Hello, I want to register as a worker on Web3Morocco",
+"_blank"
+);
+
+}
+
+function contactUs(){
+
+window.open(
+"https://wa.me/"+phone,
+"_blank"
+);
+
 }
 
 function service(name){
-document.getElementById("status")="Selected: "+name;
-window.open("https://wa.me/"+phone+"?text=I need "+name,"_blank");
+
+document.getElementById("status").innerText=
+"Selected: "+name;
+
+window.open(
+"https://wa.me/"+phone+
+"?text=Hello, I need "+name,
+"_blank"
+);
+
 }
+
 </script>
 
 </body>
